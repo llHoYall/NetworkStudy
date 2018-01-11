@@ -17,13 +17,21 @@ file (GLOB CLIENT_SOURCES
 	TCPv4_Echo_Client.c
 )
 
-file (GLOB SERVER_SOURCES
+file (GLOB SERVER4_SOURCES
 	TCPv4_Echo_Server.c
-	TCPv4ServerUtility.c
+	TCPServerUtility.c
+)
+
+file (GLOB SERVER6_SOURCES
+	TCPv6_Echo_Server.c
+	TCPServerUtility.c
 )
 
 project (client)
 add_executable (client ${COMMON} ${CLIENT_SOURCES})
 
-project (server)
-add_executable (server ${COMMON} ${SERVER_SOURCES})
+project (server4)
+add_executable (server4 ${COMMON} ${SERVER4_SOURCES})
+
+project (server6)
+add_executable (server6 ${COMMON} ${SERVER6_SOURCES})
