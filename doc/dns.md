@@ -32,6 +32,12 @@ int getaddrinfo(const char* host, const char* service,
 
 void freeaddrinfo(struct addrinfo* addrList);
 
+int getnameinfo(const struct sockaddr* addr, socklen_t addrlen,
+                char* host, socklen_t hostlen,
+                char* service, socklen_t servicelen, int flags);
+
+int gethostname(char* name, size_t len);
+
 const char* gai_strerror(int errcode);
 ```
 
@@ -51,6 +57,30 @@ const char* gai_strerror(int errcode);
 getaddrinfo()의 결과로 생성된 linked list의 메모리를 해제한다.
 
 - addrList: getaddrinfo()의 결과로 생성된 linked list를 입력한다.
+
+##### getnameinfo()
+
+IP 주소로 호스트 이름을 얻는다.
+
+- addr: socket address.
+- addrlen: addr 길이.
+- host: 반환받을 호스트 이름 버퍼.
+- hostlen: host 길이.
+- service: 반환받을 서비스 이름 버퍼.
+- servicelen: service 길이.
+- flags: 각 비트에 설정된 값에 따라 의미가 다르다. 원하는 플래그들을 '|'로 결합하여 사용한다.
+  - NI_NAMEREQD: 이 플래그가 설정되면 호스트 이름이 발견되지 않으면 에러를 반환한다. 이 플래그를 설정하지 않으면 숫자 형식의 주소가 반환된다.
+  - NI_DGRAM: 이 플래그가 설정되면 UDP 서비스를 지정한다. 특정 서비스는 UDP와 TCP 포트가 다르다.
+  - NI_NOFQDN: 이 플래그가 설정되면 호스트 이름만을  반환한다. Fully Qualified Domain Name은 반환하지 않는다.
+  - NI_NUMERICHOST: 이 플래그가 설정되면 이름 대신 숫자 형식의 호스트 이름을 반환한다. 이 플래그는 inet_ntop() 대신 이 함수를 사용할 때 이름 서비스 검색 (lookup)을 잠재적으로 피하기 위해서 사용된다.
+  - NI_NUMERICSERV: 이 플래그가 설정되면 이름 대신 숫자 형식의 서비스 주소를 반환한다.
+
+##### gethostname()
+
+자신의 호스트 이름을 반환한다.
+
+- name: 반환받을 호스트 이름 버퍼.
+- len: name의 길이.
 
 ##### gai_strerror()
 
