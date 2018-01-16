@@ -1,15 +1,14 @@
 /*******************************************************************************
- * @file			TCPServerUtility.c
- * @brief			This is a utility of TCP server.
+ * @file			TCPClientUtility.c
+ * @brief			This is a utility of TCP client.
  * @author		llHoYall <hoya128@gmail.com>
  *******************************************************************************
  * @version		v1.0
  * @note
- *	- 2018.01.07	Created.
+ *	- 2018.01.13	Created.
  ******************************************************************************/
 
 /* Include Headers -----------------------------------------------------------*/
-#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -17,64 +16,32 @@
 #include <unistd.h>
 #include "Practical.h"
 
-/* Private Variables ---------------------------------------------------------*/
-static const int MAXPENDING = 5;
-
 /* APIs ----------------------------------------------------------------------*/
-int SetupTCPServerSocket(const char* service) {
+int SetupTCPClientSocket(const char* host, const char* service) {
 	struct addrinfo addrCriteria;
 	memset(&addrCriteria, 0, sizeof(addrCriteria));
 	addrCriteria.ai_family = AF_UNSPEC;
-	addrCriteria.ai_flags = AI_PASSIVE;
 	addrCriteria.ai_socktype = SOCK_STREAM;
 	addrCriteria.ai_protocol = IPPROTO_TCP;
 
 	struct addrinfo* serverAddr;
-	int retval = getaddrinfo(NULL, service, &addrCriteria, &serverAddr);
+	int retval = getaddrinfo(host, service, &addrCriteria, &serverAddr);
 	if (retval != 0)
 		DieWithUserMessage("getaddrinfo() failed", gai_strerror(retval));
 
-	int serverSock = -1;
+	int sock = -1;
 	for (struct addrinfo* addr = serverAddr; addr != NULL; addr = addr->ai_next) {
-		serverSock = socket(serverAddr->ai_family, serverAddr->ai_socktype,	\
-												serverAddr->ai_protocol);
-		if (serverSock < 0)
+		sock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+		if (sock < 0)
 			continue;
-		if ((bind(serverSock, serverAddr->ai_addr, serverAddr->ai_addrlen) == 0)	\
-				&& (listen(serverSock, MAXPENDING) == 0)) {
-			struct sockaddr_storage localAddr;
-			socklen_t addrSize = sizeof(localAddr);
-			if (getsockname(serverSock, (struct sockaddr*)&localAddr, &addrSize) < 0)
-				DieWithSystemMessage("getsockname() failed");
-			fputs("Binding to ", stdout);
-			PrintSocketAddress((struct sockaddr*)&localAddr, stdout);
-			fputc('\n', stdout);
+		if (connect(sock, addr->ai_addr, addr->ai_addrlen) == 0)
 			break;
-		}
-
-
-		close(serverSock);
-		serverSock = -1;
+		close(sock);
+		sock = -1;
 	}
 
 	freeaddrinfo(serverAddr);
-	return serverSock;
-}
-
-int AcceptTCPConnection(int serverSock) {
-	struct sockaddr_storage clientAddr;
-	socklen_t clientAddrLen = sizeof(clientAddr);
-
-	int clientSock = accept(serverSock, (struct sockaddr*)&clientAddr,	\
-													&clientAddrLen);
-	if (clientSock < 0)
-		DieWithSystemMessage("accept() failed");
-
-	fputs("Handling client ", stdout);
-	PrintSocketAddress((struct sockaddr*)&clientAddr, stdout);
-	fputc('\n', stdout);
-
-	return clientSock;
+	return sock;
 }
 
 void HandleTCPClient(int clientSocket) {

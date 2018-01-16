@@ -11,6 +11,9 @@
 #ifndef __PRACTICAL_H__
 #define __PRACTICAL_H__
 
+/* Include Headers -----------------------------------------------------------*/
+#include <stdio.h>
+
 /* Definitions ---------------------------------------------------------------*/
 #define BUFSIZE		256
 
@@ -20,6 +23,14 @@ void DieWithUserMessage(const char* msg, const char* detail);
 void DieWithSystemMessage(const char* msg);
 
 // TCPServerUtility
+int SetupTCPServerSocket(const char* service);
+int AcceptTCPConnection(int serverSock);
 void HandleTCPClient(int clientSocket);
+
+// TCPClientUtility
+int SetupTCPClientSocket(const char* host, const char* service);
+
+// AddressUtility
+void PrintSocketAddress(const struct sockaddr* addr, FILE* fp);
 
 #endif
