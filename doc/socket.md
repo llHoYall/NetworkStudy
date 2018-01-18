@@ -232,7 +232,7 @@ int inet_pton(int addressFamily, const char* src, void* dst);
  *						error.
  */
 const char* inet_ntop(int addressFamily, const void* src, char* dst,
-											 socklen_t dstBytes);
+					  socklen_t dstBytes);
 
 #include <sys/socket.h>
 /**
@@ -250,8 +250,8 @@ const char* inet_ntop(int addressFamily, const void* src, char* dst,
  *	@retval		On success, zero is returned.
  *						On error, -1 is returned, and errno is set appropriately.
  */
-int getpeername(int sockfd,
-								struct sockaddr* remoteAddress, socklen_t* addrlen);
+int getpeername(int sockfd, struct sockaddr* remoteAddress, 
+                socklen_t* addrlen);
 
 #include <sys/socket.h>
 /**
@@ -265,8 +265,37 @@ int getpeername(int sockfd,
  *	@retval		On success, zero is returned.
  *						On error, -1 is returned, and errno is set appropriately.
  */
-int getsockname(int sockfd,
-								struct sockaddr* localAddress, socklen_t* addrlen);
+int getsockname(int sockfd, struct sockaddr* localAddress, 
+                socklen_t* addrlen);
 ```
 
+### UDP Communication
 
+```c
+#include <sys/types.h>
+#include <sys/socket.h>
+
+ssize_t sendto(int sockfd, const void* buf, size_t len, int flags,
+               const struct sockaddr* dst_addr, socklen_t addrlen);
+
+ssize_t recvfrom(int sockfd, void* buf, size_t len, int flags,
+                 struct sockaddr* src_addr, socklen_t* addrlen);
+```
+
+##### sendto()
+
+- sockfd
+- buf
+- len: buf 길이.
+- flags
+- dst_addr
+- addrlen: dst_addr 길이.
+
+##### recvfrom()
+
+- sockfd
+- buf
+- len: buf 길이.
+- flags
+- src_addr
+- addrlen: src_addr 길이.
