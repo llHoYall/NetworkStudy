@@ -275,27 +275,17 @@ int getsockname(int sockfd, struct sockaddr* localAddress,
 #include <sys/types.h>
 #include <sys/socket.h>
 
-ssize_t sendto(int sockfd, const void* buf, size_t len, int flags,
-               const struct sockaddr* dst_addr, socklen_t addrlen);
+ssize_t sendto(int sockfd, const void* buf, size_t buflen, int flags,
+               const struct sockaddr* dst, socklen_t dstlen);
 
-ssize_t recvfrom(int sockfd, void* buf, size_t len, int flags,
-                 struct sockaddr* src_addr, socklen_t* addrlen);
+ssize_t recvfrom(int sockfd, void* buf, size_t buflen, int flags,
+                 struct sockaddr* src, socklen_t* srclen);
 ```
 
 ##### sendto()
 
-- sockfd
-- buf
-- len: buf 길이.
-- flags
-- dst_addr
-- addrlen: dst_addr 길이.
+UDP로 데이터를 보낼 때 사용.
 
 ##### recvfrom()
 
-- sockfd
-- buf
-- len: buf 길이.
-- flags
-- src_addr
-- addrlen: src_addr 길이.
+UDP로 데이터를 받을 때 사용.
